@@ -1,0 +1,48 @@
+import logo from './logo.svg';
+import './App.css';
+import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+function FetchPage() {
+  const navigate = useNavigate()
+  const [data, setData] = useState({});
+  const fetchData = async () => {
+    await setTimeout(50000)
+    const result = await axios.get('https://dummyjson.com/products');
+    await console.log(result.data.products)
+  };
+
+  useEffect(() => {
+    if (!localStorage.getItem('isLogin')) {
+      navigate('/')
+    }
+    fetchData()
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .put(`https://dummyjson.com/products/1`, data)
+      .then((res) => {
+        console.log(res.data);
+      });
+  };
+    return (
+      <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="title"
+        onChange={(e) => setData({ ...data, title: e.target.value })}
+      />
+      <input
+        type="text"
+        name="description"
+        onChange={(e) => setData({ ...data, description: e.target.value })}
+      />
+      <button type="submit">Submit</button>
+    </form>
+      )
+}
+
+export default FetchPage;
